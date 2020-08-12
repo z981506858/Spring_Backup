@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        https://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 告知Spring在创建容器时需要扫描的包
+        此时需要xmlns:context="http://www.springframework.org/schema/context"的名称空间
+     -->
+    <!-- 创建IOC容器时要扫描的包 -->
+    <context:component-scan base-package="com.zz"></context:component-scan>
+
+    <bean id="daoTest" class="com.zz.dao.impl.DaoTestImpl1">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+        <property name="url" value="jdbc:mysql://localhost:3306/springtest?serverTimezone=GMT%2B8"></property>
+        <property name="username" value="root"></property>
+        <property name="password" value="123456"></property>
+    </bean>
+
+    <!-- Spring中基于xml的声明式事务控制配置
+            配置事务管理器
+            配置事务通知：
+                <tx:advice>来配置事务通知:
+                    id：给事务通知指定唯一标识
+                    transaction-manager：给事务通知提供一个事务管理器
+    -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!-- 配置事务的属性
+                isolation：指定事务隔离基本。默认值式DEFAULT，表示使用数据库的默认隔离级别。
+                propagation：指定事务传播行为。默认值式DEAFLUT，表示一定会有事务，增删改的选择。查询的选择SUPPORT。
+                read-only：指定事务是否只读。只有查询方法才设置为true。默认值式false，表示读写
+                timeout：指定事务的超时时间。默认值式-1，表示永不超时。如果指定了数值，单位式秒。
+                rollback-for：用于指定一个异常，当产生该异常时，事务回滚，产生其他异常时，事务不回滚。没有默认值，表示任何事务都回滚。
+                no-rollback-for：用于指定一个异常，当产生该异常时，事务不回滚，产生其他异常时，事务回滚。没有默认值，表示任何事务都回滚。
+         -->
+        <tx:attributes>
+            <tx:method name="transfer" propagation="REQUIRED" read-only="false" />
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <!-- 配置切入点表达式 -->
+        <aop:pointcut id="pt1" expression="execution(* com.zz.service.impl.*.*(..))"/>
+        <!-- 建立切入点表达式和事务通知的对应关系 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pt1"></aop:advisor>
+    </aop:config>
+</beans>

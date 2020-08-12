@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 把对象的创建交给Spring来管理 -->
+    <!-- spring对bean的管理细节
+            1.创建bean的三种方式
+            2.bean对象的生命周期
+            3.bean对象的作业范围
+     -->
+
+    <!-- Bean对象的三种创建方式 -->
+    <!-- 方式1.使用默认构造函数创建
+            在配置文件中用<bean>标签，配置id和class属性后没有其他的成分
+            此时采用的就是默认构造函数创建，如果类中没有默认构造函数则bean对象无法创建
+     -->
+<!--    <bean id="accountService" class="com.zz.service.impl.ServiceTestImpl"></bean>-->
+
+    <!-- 方式2.使用普通工厂中的方法创建对象（使用某个类中的方法创建对象，并存入到Spring容器中）
+            此方法适用于获取jar包中的对象
+     -->
+    <!-- 获取工厂对象 -->
+<!--    <bean id="instancefactory" class="com.zz.factory.InstanceFactory"></bean>-->
+    <!-- 根据工厂对象里的方法创建对象 -->
+<!--    <bean id="accountService" factory-bean="instancefactory" factory-method="getService"></bean>-->
+
+    <!-- 方式3.使用工厂中的静态方法来创建（使用某个类中的静态方法创建对象，并存入到Spring容器中） -->
+<!--    <bean id="accountService" class="com.zz.factory.StaticFactory" factory-method="getService"></bean>-->
+
+    <!-- Bean对象的作用范围
+            通过<bean>标签的scope属性来控制：
+                1.singleton：单例（默认）
+                2.prototype：多例
+                3.request：作用于WEB的请求范围
+                4.session：作用于WEB的会话范围
+                5.global-session：作用与集群环境的会话范围（全局会话）
+    -->
+    <bean id="accountService" class="com.zz.service.impl.ServiceTestImpl" scope="singleton"></bean>
+
+    <bean id="accountDao" class="com.zz.dao.impl.DaoTestImpl"></bean>
+
+</beans>

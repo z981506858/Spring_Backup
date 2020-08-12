@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Spring的依赖注入
+            IOC作用：降低程序间的耦合
+            依赖的管理：由Spring维护
+                在当前类需要用到其他类的对象，由Spring来提供，我们只需在配置文件中说明
+            依赖关系的维护：就是依赖注入
+            依赖注入的数据有三类：
+                1、基本类型和String
+                2、其他的Bean类型（在配置文件中或者注解配置过的Bean）
+                3、复杂类型或者集合类型
+            依赖注入的三种方式：
+                1、构造方法
+                2、set方法
+                3、注解
+     -->
+
+    <!-- 构造方法注入
+        使用标签：<constructor-arg>
+        使用位置：<bean>标签内部
+        标签属性：
+            type：根基构造方法中的数据类型来进行数据注入
+            index：根据构造方法中的数据索引进行数据注入，索引从0开始
+            name：根据构造方法中的数据名进行数据注入
+            *********以上三种方法都是用于给构造方法进行参数赋值*********
+            value：要注入的数据
+            ref：数据引用
+     -->
+    <bean id="accountService" class="com.zz.service.impl.ServiceTestImpl" scope="singleton">
+        <constructor-arg name="name" value="ZZ"></constructor-arg>
+        <constructor-arg name="age" value="18"></constructor-arg>
+        <constructor-arg name="birthday" ref="now"></constructor-arg>
+    </bean>
+    <bean id="now" class="java.util.Date"></bean>
+
+    <!-- Set方法
+         涉及的标签：property
+         出现的位置：<bean>标签内部
+         标签属性：
+            name：指定注入时调用的set方法名
+            value：提供基本型和string型的数据
+            ref：引用其他bean数据源，指的是在ioc容器中出现过的bena
+         优势：创建对象时没有明确的限制，可以直接使用默认构造函数
+         弊端：如果某个成员必须有值，而获取的对象有可能set方法没有执行
+     -->
+    <bean id="accountService2" class="com.zz.service.impl.ServiceTestImpl2">
+        <property name="name" value="xx"></property>
+        <property name="age" value="12"></property>
+        <property name="birthday" ref="now"></property>
+    </bean>
+
+    <!-- 复杂类型的注入/集合类型的注入
+         给List结构集合注入的标签：
+            List，Array，Set
+         给Map结构集合注入的标签：
+            Map，props
+         结构相同的标签可以互换
+    -->
+    <bean id="accountService3" class="com.zz.service.impl.ServiceTestImpl3">
+        <property name="myStrs">
+            <array>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </array>
+        </property>
+
+        <property name="myList">
+            <list>
+                <value>ZZZ</value>
+                <value>XXX</value>
+                <value>SSS</value>
+            </list>
+        </property>
+
+        <property name="mySet">
+            <set>
+                <value>EEE</value>
+                <value>RRR</value>
+                <value>FFF</value>
+            </set>
+        </property>
+
+        <property name="myMap">
+            <map>
+                <entry key="T1" value="WWW"></entry>
+                <entry key="T2" value="DDD"></entry>
+            </map>
+        </property>
+
+        <property name="myProps">
+            <props>
+                <prop key="S1">TTT</prop>
+                <prop key="S2">GGG</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>

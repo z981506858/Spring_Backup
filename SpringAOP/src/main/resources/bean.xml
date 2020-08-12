@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 告知Spring在创建容器时需要扫描的包
+        此时需要xmlns:context="http://www.springframework.org/schema/context"的名称空间
+     -->
+    <context:component-scan base-package="com.zz"></context:component-scan>
+
+    <bean id="runner" class="org.apache.commons.dbutils.QueryRunner" scope="prototype">
+<!--        <constructor-arg name="ds" ref="dataSource"></constructor-arg>-->
+    </bean>
+
+    <!-- 配置数据源 -->
+    <!--
+        8.0.18的mysql依赖需要添加时区，否在会报错
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/springtest?serverTimezone=GMT%2B8"></property>
+    -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/springtest?serverTimezone=GMT%2B8"></property>
+        <property name="user" value="root"></property>
+        <property name="password" value="123456"></property>
+    </bean>
+
+    <bean id="connectionUtil" class="com.zz.utils.ConnectionUtil">
+<!--        <property name="dataSource" ref="dataSource"></property>-->
+    </bean>
+
+    <bean id="transactionManager" class="com.zz.utils.TransactionManager"></bean>
+
+    <bean id="beanFactory" class="com.zz.factory.BeanFactory"></bean>
+
+    <bean id="proxyAccountService" factory-bean="beanFactory" factory-method="getServiceTest"></bean>
+</beans>
